@@ -1,23 +1,26 @@
 class CardsController < ApplicationController
   def create
-    @card =Card.new(cards_params)
+    @list=List.find(params[:list_id])
+    @card = @list.cards.build(card_params)
+    respond_to do |format|
       if @card.save
-        redirect_to @card
+        format.json {render json: @card}
       else
-        render :new
+        format.json {render json: @card.errors.full_messages}
       end
-
+    end
   end
   def show
     @card = Card.find(params[:id])
   end
   def index
-    @card = Card.all
+    @list= List.find(params[:list_id])
+    @cards = @list.cards
   end
   def update
     @card = Card.find(params[:id])
 
-    if @card.update(cards_params)
+    if @card.update(card_params)
       redirect_to @card
     else
       render :edit
@@ -28,4 +31,9 @@ class CardsController < ApplicationController
     @card.destroy
     redirect_to cards_path
   end
+  private
+  def card_params
+    params.require(:card).permit(:body)
+  end
+
 end

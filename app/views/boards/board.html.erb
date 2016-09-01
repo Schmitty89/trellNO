@@ -2,4 +2,14 @@
 <p>
   this is here in place of the show for the board and will correlate to where i render all the react info.
 </p>
-<%=link_to "lists"%>
+<%= form_for :board, url: boards_path do |f| %>
+  <p>
+    <%= f.label :project %><br>
+    <%= f.text_field :project %>
+  </p>
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
+
+<%=link_to "lists" %>

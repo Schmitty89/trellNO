@@ -1,10 +1,13 @@
 class BoardsController < ApplicationController
+  def new
+    @board =Board.new
+  end
   def create
-    @board= Board.new(boards_path)
+    @board= Board.new(rest_params)
     if @board.save
-      redirect_to @board
+      format.json {render json: @board}
   else
-    render :new
+    format.json {render json: @board.errors.full_messages}
   end
 
   end
@@ -12,11 +15,16 @@ class BoardsController < ApplicationController
     @board = Board.find(params[:id])
   end
   def index
-    @board = Board.all
+    @boards = Board.all
   end
   def destroy
     @board = Board.find(params[:id])
     @board.destroy
     redirect_to boards_path
+  end
+
+  private
+  def rest_params
+    params.require(:board).permit(:project)
   end
 end

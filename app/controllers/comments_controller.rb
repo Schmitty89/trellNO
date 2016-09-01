@@ -1,19 +1,27 @@
 class CommentsController < ApplicationController
   def create
-    # you need your save if statements still
-    @comment=Comment.new(comments_params)
+    @card = Card.find(params[:card_id])
+    @comment= @card.comments.build(comm_params)
+    respond_to do |format|
     if @comment.save
-      redirect_to @comment
+      format.json {render json: @comment}
     else
-      render :new
+      format.json {render json: @comment.errors.full_messages}
     end
+   end
   end
   def index
-    @comment=Comment.all
+    @card = Card.find(params[:card_id])
+    @comments=@card.comments
   end
   def destroy
     @comment = Comment.find(params[:id])
     @comment.destroy
     redirect_to comments_path
+  end
+  private
+  def comm_params
+    params.require(:comment).permit(:commenter, :body)
+
   end
 end
